@@ -2,8 +2,8 @@
   <section class="create-todo">
     <h4>CREATE A TODO</h4>
 
-    <form @submit.prevent="addTodo">
-      <h5>What's on your todo list?</h5>
+    <form @submit.prevent="addTask">
+      <h5>What's on your tasks list?</h5>
       <input
           type="text"
           placeholder="e.g. make a video"
@@ -33,9 +33,8 @@
         </label>
 
       </div>
-      <h5>Schedule</h5>
       <div class="d-grid gap-2">
-        <button class="btn btn-outline-info" type="submit">Add todo</button>
+        <button class="btn btn-outline-info" type="submit">Add task</button>
       </div>
     </form>
   </section>
@@ -43,29 +42,20 @@
 
 <script setup>
 import {ref} from 'vue'
-import { v4 as uuidv4 } from 'uuid'
+import {useStore} from "vuex";
 
+const store = useStore()
 const inputContent = ref('')
 const inputCategory = ref(null)
-const props = defineProps({
-  todos: Array
-})
 
-const addTodo = () => {
-  if (inputContent.value.trim() === '' || inputCategory.value === null) {
-    return
-  }
-  props.todos.push({
-    id: uuidv4(),
-    content: inputContent.value,
-    category: inputCategory.value,
-    done: false,
-    createdAt: new Date().getTime()
-  })
-
+const addTask = () => {
+  store.dispatch(
+      'createTask', {
+        inputContent : inputContent.value.trim(),
+        inputCategory : inputCategory.value
+      })
   inputContent.value = ''
   inputCategory.value = null
-
 }
 
 </script>
