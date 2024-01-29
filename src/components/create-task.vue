@@ -6,35 +6,16 @@
       <h5>What's on your tasks list?</h5>
       <input
           type="text"
-          placeholder="e.g. make a video"
+          placeholder="make a task name"
           v-model="inputContent"
       />
-      <h5>Pick a category</h5>
-      <div class="options">
-        <label>
-          <input
-              type="radio"
-              name="category"
-              value="business"
-              v-model="inputCategory"
-          />
-          <span class="bubble business"></span>
-          <div>Business</div>
-        </label>
-        <label>
-          <input
-              type="radio"
-              name="category"
-              value="personal"
-              v-model="inputCategory"
-          />
-          <span class="bubble personal"></span>
-          <div>Personal</div>
-        </label>
-
-      </div>
+      <textarea
+          type="text"
+          placeholder="make a description"
+          v-model="descriptionContent"
+      />
       <div class="d-grid gap-2">
-        <button class="btn btn-outline-info" type="submit">Add task</button>
+        <button class="btn btn-primary" type="submit">Add task</button>
       </div>
     </form>
   </section>
@@ -42,20 +23,24 @@
 
 <script setup>
 import {ref} from 'vue'
-import {useStore} from "vuex";
-
+import {useStore} from "vuex"
 const store = useStore()
 const inputContent = ref('')
-const inputCategory = ref(null)
+const descriptionContent = ref('')
+const emit = defineEmits(['taskCreated'])
 
-const addTask = () => {
-  store.dispatch(
+const addTask =  async () => {
+  if (inputContent.value === '' || descriptionContent.value === '') {
+    return
+  }
+ await store.dispatch(
       'createTask', {
-        inputContent : inputContent.value.trim(),
-        inputCategory : inputCategory.value
+        name : inputContent.value.trim(),
+        description: descriptionContent.value.trim()
       })
+  emit('taskCreated')
   inputContent.value = ''
-  inputCategory.value = null
+  descriptionContent.value = ''
 }
 
 </script>
